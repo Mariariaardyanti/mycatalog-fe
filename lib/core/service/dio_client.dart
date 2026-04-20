@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_app/core/service/secure_storage.dart';
 import 'package:dio/dio.dart';
 import 'package:shopping_app/core/constants/api_constants.dart';
-import 'package:shopping_app/core/services/secure_storage_service.dart';
+
 
 class DioClient {
   static Dio? _instance;
