@@ -1,0 +1,13 @@
+import 'package:flutter/material.dart';
+
+// Representasi kondisi autentikasi
+enum AuthStatus {
+  initial,          // Belum ada action
+  loading,          // Proses berlangsung
+  authenticated,    // Login berhasil + token backend ada
+  unauthenticated,  // Belum login / logout
+  emailNotVerified, // Login tapi email belum dikonfirmasi
+  error,            // Ada error
+}
+
+
