@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shopping_app/core/service/secure_storage.dart';
 import 'package:shopping_app/core/service/dio_client.dart';
 
+
 // Representasi kondisi autentikasi
 enum AuthStatus {
   initial,          // Belum ada action
@@ -14,6 +15,7 @@ enum AuthStatus {
   error,            // Ada error
 }
 
+
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -23,6 +25,8 @@ class AuthProvider extends ChangeNotifier {
   User?     _firebaseUser;
   String?   _backendToken;   // Token dari backend (bukan Firebase token)
   String?   _errorMessage;
+  String? _tempEmail;
+  String? _tempPassword;
 
   // ─── Getters ─────────────────────────────────────────────
   AuthStatus get status       => _status;
@@ -185,8 +189,29 @@ class AuthProvider extends ChangeNotifier {
     _backendToken = null;
     _status = AuthStatus.unauthenticated;
     notifyListeners();
+  }
+     // ─── Private Helpers ──────────────────────────────────────
+  void _setLoading() {
+    _status = AuthStatus.loading;
+    _errorMessage = null;
+    notifyListeners();
+  }
 
+  void _setError(String message) {
+    _status = AuthStatus.error;
+    _errorMessage = message;
+    notifyListeners();
+  }
 
+  String _mapFirebaseError(String code) => switch (code) {
+    'email-already-in-use'  => 'Email sudah terdaftar. Gunakan email lain.',
+    'user-not-found'        => 'Akun tidak ditemukan. Silakan daftar.',
+    'wrong-password'        => 'Password salah. Coba lagi.',
+    'invalid-email'        => 'Format email tidak valid.',
+    'weak-password'        => 'Password terlalu lemah. Minimal 6 karakter.',
+    'network-request-failed'=> 'Tidak ada koneksi internet.',
+    _                      => 'Terjadi kesalahan. Coba lagi.',
+  };
 
 }
 
