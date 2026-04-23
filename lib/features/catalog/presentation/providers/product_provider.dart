@@ -20,19 +20,24 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await DioClient.instance.get('/products');
+  final response = await DioClient.instance.get('/products');
 
-      final List data = response.data['data'];
+  print("RESPONSE: ${response.data}");
 
-      _products = data
-          .map((json) => ProductModel.fromJson(json))
-          .toList();
+  final List data = response.data['data'];
 
-      _status = ProductStatus.loaded;
-    } catch (e) {
-      _error = e.toString();
-      _status = ProductStatus.error;
-    }
+  print("JUMLAH DATA: ${data.length}");
+
+  _products = data
+      .map((json) => ProductModel.fromJson(json))
+      .toList();
+
+  _status = ProductStatus.loaded;
+} catch (e) {
+  print("ERROR: $e");
+  _error = e.toString();
+  _status = ProductStatus.error;
+}
 
     notifyListeners();
   }

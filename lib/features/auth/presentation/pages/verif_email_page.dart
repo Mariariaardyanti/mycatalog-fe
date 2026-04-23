@@ -6,7 +6,7 @@ import 'package:shopping_app/core/widgets/auth_header.dart';
 import 'package:shopping_app/core/widgets/loading_overlay.dart';
 import 'package:shopping_app/core/widgets/custom_button.dart';
 import 'package:email_validator/email_validator.dart';
-
+import 'package:shopping_app/core/routes/app_router.dart'; 
 
 class VerifyEmailPage extends StatefulWidget {
   const VerifyEmailPage({super.key});
@@ -39,7 +39,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       final success = await auth.checkEmailVerified();
       if (success && mounted) {
         _timer?.cancel();
-        Navigator.pushReplacementNamed(context, AppRouter.dashboard);
+        Navigator.pushReplacementNamed(context, AppRouter.catalog);
       }
     });
   }

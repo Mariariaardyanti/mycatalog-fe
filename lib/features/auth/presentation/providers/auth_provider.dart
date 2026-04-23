@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shopping_app/core/service/secure_storage.dart';
 import 'package:shopping_app/core/service/dio_client.dart';
-
+import 'package:shopping_app/core/constants/api_constants.dart'; 
 
 // Representasi kondisi autentikasi
 enum AuthStatus {
@@ -40,28 +40,27 @@ class AuthProvider extends ChangeNotifier {
 
 
   Future<bool> register({name, email, password}) async {
-    _setLoading(); // status = loading, notifyListeners()
-  
-    // STEP 1: Buat akun di Firebase
+  _setLoading();
+  try {
     final credential = await _auth.createUserWithEmailAndPassword(
       email: email, password: password,
     );
     _firebaseUser = credential.user;
-  
-    // STEP 2: Simpan nama di profil Firebase
     await _firebaseUser?.updateDisplayName(name);
-  
-    // STEP 3: Firebase kirim email verifikasi
     await _firebaseUser?.sendEmailVerification();
-  
-    // STEP 4: Simpan sementara untuk re-login nanti
     _tempEmail = email;
     _tempPassword = password;
-  
     _status = AuthStatus.emailNotVerified;
+    notifyListeners(); 
     return true;
+  } on FirebaseAuthException catch (e) {
+    _setError(_mapFirebaseError(e.code)); // ← ini yang handle loading berhenti
+    return false;
+  } catch (e) {
+    _setError('Terjadi kesalahan: $e');
+    return false;
   }
-
+}
     Future<bool> loginAfterEmailVerification() async {
     _setLoading();
   
@@ -89,27 +88,29 @@ class AuthProvider extends ChangeNotifier {
   }
 
     Future<bool> _verifyTokenToBackend() async {
-    // Ambil Firebase ID Token (expired tiap 1 jam)
-    final firebaseToken = await _firebaseUser?.getIdToken();
-  
-    // POST ke backend — DioClient interceptor sudah handle logging
+  try {
+   final firebaseToken = await _firebaseUser?.getIdToken(true);
+    print(' Firebase Token: $firebaseToken');
+
     final response = await DioClient.instance.post(
       ApiConstants.verifyToken,
       data: {'firebase_token': firebaseToken},
     );
-  
-    // Backend return JWT milik sistem kita
+    print(' Response backend: ${response.data}');
+
     final data = response.data['data'] as Map<String, dynamic>;
     final backendToken = data['access_token'] as String;
-  
-    // Simpan aman di device (encrypted)
     await SecureStorageService.saveToken(backendToken);
-  
+
     _status = AuthStatus.authenticated;
     notifyListeners();
     return true;
+  } catch (e) {
+    print(' Error verifyToken: $e');
+    _setError(e.toString());
+    return false;
   }
-
+}
     // ─── Login dengan Email & Password ───────────────────────
   Future<bool> loginWithEmail({
     required String email,
@@ -171,15 +172,16 @@ class AuthProvider extends ChangeNotifier {
 
   // ─── Cek status verifikasi email (polling) ────────────────
   Future<bool> checkEmailVerified() async {
-    await _firebaseUser?.reload(); // Refresh data user dari Firebase
-    _firebaseUser = _auth.currentUser;
+  await _firebaseUser?.reload();
+  _firebaseUser = _auth.currentUser;
 
-    if (_firebaseUser?.emailVerified ?? false) {
-      return await _verifyTokenToBackend();
-    }
-    return false;
+  if (_firebaseUser?.emailVerified ?? false) {
+    // Force refresh token agar dapat token BARU yang emailVerified = true
+    await _firebaseUser?.getIdToken(true); // ← true = force refresh
+    return await _verifyTokenToBackend();
   }
-
+  return false;
+}
     // ─── Logout ───────────────────────────────────────────────
   Future<void> logout() async {
     await _auth.signOut();

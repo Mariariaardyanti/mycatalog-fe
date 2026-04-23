@@ -9,7 +9,7 @@ import 'package:shopping_app/core/widgets/custom_button.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:shopping_app/core/widgets/divider_with_text.dart';
 import 'package:shopping_app/core/widgets/google_sign_in_button.dart';
-
+import 'package:shopping_app/core/routes/app_router.dart'; 
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
   /// Routing berdasarkan hasil login
   void _handleLoginResult(bool ok, AuthProvider auth) {
     if (ok) {
-      Navigator.pushReplacementNamed(context, AppRouter.dashboard);
+      Navigator.pushReplacementNamed(context, AppRouter.catalog);
     } else if (auth.status == AuthStatus.emailNotVerified) {
       Navigator.pushReplacementNamed(context, AppRouter.verifyEmail);
     } else {
