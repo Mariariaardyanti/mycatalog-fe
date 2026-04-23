@@ -4,6 +4,7 @@ import 'package:shopping_app/features/catalog/presentation/providers/product_pro
 import 'package:shopping_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:shopping_app/core/routes/app_router.dart';
 import 'package:shopping_app/features/catalog/data/models/product_model.dart';
+import 'package:shopping_app/features/cart/presentation/providers/cart_provider.dart';
 
 class CatalogPage extends StatefulWidget {
   const CatalogPage({super.key});
@@ -177,7 +178,7 @@ class _CatalogPageState extends State<CatalogPage> {
               ProductStatus.loaded => Builder(builder: (context) {
                   final filtered = _filteredProducts(product.products);
                   if (filtered.isEmpty) {
-                    return const Center(child: Text('Produk tidak ditemukan 🔍'));
+                    return const Center(child: Text('Produk tidak ditemukan '));
                   }
                   return RefreshIndicator(
                     onRefresh: () => product.fetchProducts(),
@@ -245,6 +246,23 @@ class _CatalogPageState extends State<CatalogPage> {
                                               fontSize: 10,
                                               color: Color(0xFF1565C0))),
                                     ),
+                                    const SizedBox(height: 8),
+
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              context.read<CartProvider>().addToCart(p);
+
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text('Berhasil ditambahkan ke keranjang 🛒'),
+                                                ),
+                                              );
+                                            },
+                                            child: const Text('Tambah'),
+                                          ),
+                                        ),
                                   ],
                                 ),
                               ),
