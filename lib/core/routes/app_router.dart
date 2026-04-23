@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-
-// AUTH
 import 'package:shopping_app/features/auth/presentation/pages/login_page.dart';
 import 'package:shopping_app/features/auth/presentation/pages/register_page.dart';
 import 'package:shopping_app/features/auth/presentation/pages/verif_email_page.dart';
-
-// CATALOG
 import 'package:shopping_app/features/catalog/presentation/pages/catalog_page.dart';
+import 'package:shopping_app/features/cart/presentation/pages/cart_page.dart';
+
 
 class AppRouter {
   //  Route names
@@ -14,6 +12,7 @@ class AppRouter {
   static const register = '/register';
   static const verifyEmail = '/verify-email';
   static const catalog = '/catalog';
+  static const cart = '/cart';
 
   //  Route generator
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -31,8 +30,13 @@ class AppRouter {
       case catalog:
         return MaterialPageRoute(builder: (_) => const CatalogPage());
 
+      
+      case cart:
+      return MaterialPageRoute(builder: (_) => const CartPage());
+
       default:
         return MaterialPageRoute(builder: (_) => const LoginPage());
+
     }
   }
 }

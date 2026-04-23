@@ -15,7 +15,7 @@ class CartPage extends StatelessWidget {
       ),
       body: cart.items.isEmpty
           ? const Center(
-              child: Text('Keranjang masih kosong 🛒'),
+              child: Text('Keranjang masih kosong '),
             )
           : Column(
               children: [
