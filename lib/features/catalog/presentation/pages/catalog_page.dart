@@ -78,15 +78,24 @@ class _CatalogPageState extends State<CatalogPage> {
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.black54),
-            onPressed: () async {
-              await auth.logout();
-              if (!mounted) return;
-              Navigator.pushReplacementNamed(context, AppRouter.login);
-            },
-          ),
-        ],
+            //CART
+            IconButton(
+              icon: const Icon(Icons.shopping_cart, color: Colors.black54),
+              onPressed: () {
+                Navigator.pushNamed(context, '/cart');
+              },
+            ),
+
+            // LOGOUT
+            IconButton(
+              icon: const Icon(Icons.logout, color: Colors.black54),
+              onPressed: () async {
+                await auth.logout();
+                if (!mounted) return;
+                Navigator.pushReplacementNamed(context, AppRouter.login);
+              },
+            ),
+          ],
       ),
       body: Column(
         children: [
