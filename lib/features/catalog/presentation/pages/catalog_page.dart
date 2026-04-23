@@ -15,7 +15,7 @@ class CatalogPage extends StatefulWidget {
 class _CatalogPageState extends State<CatalogPage> {
   String _selectedCategory = 'All';
   final _searchCtrl = TextEditingController();
-  final List<String> _categories = ['All', 'Sepatu', 'Pakaian', 'Aksesoris'];
+  final List<String> _categories = ['All', 'Ransel', 'Tas Tangan', 'Tas Olahraga'];
 
   @override
   void initState() {
@@ -185,7 +185,7 @@ class _CatalogPageState extends State<CatalogPage> {
                       padding: const EdgeInsets.all(12),
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        childAspectRatio: 0.72,
+                        childAspectRatio: 0.70,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
                       ),
@@ -200,20 +200,22 @@ class _CatalogPageState extends State<CatalogPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               ClipRRect(
-                                borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(12)),
-                                child: Image.network(
-                                  p.imageUrl,
-                                  height: 120,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Container(
-                                    height: 120,
-                                    color: Colors.grey.shade200,
-                                    child: const Icon(Icons.image_not_supported, size: 40),
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(12),
+                                  ),
+                                  child: SizedBox(
+                                    height: 230,
+                                    width: double.infinity,
+                                    child: Image.network(
+                                      p.imageUrl,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => Container(
+                                        color: Colors.grey.shade200,
+                                        child: const Icon(Icons.image_not_supported, size: 40),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
                               Padding(
                                 padding: const EdgeInsets.all(10),
                                 child: Column(
