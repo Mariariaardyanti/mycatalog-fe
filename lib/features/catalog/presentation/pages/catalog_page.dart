@@ -87,13 +87,23 @@ class _CatalogPageState extends State<CatalogPage> {
             ),
 
             // LOGOUT
-            IconButton(
-              icon: const Icon(Icons.logout, color: Colors.black54),
-              onPressed: () async {
+            // LOGOUT
+            GestureDetector(
+              onTap: () async {
+                print('=== LOGOUT DITEKAN ===');
+                final auth = context.read<AuthProvider>();
                 await auth.logout();
                 if (!mounted) return;
-                Navigator.pushReplacementNamed(context, AppRouter.login);
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRouter.login,
+                  (route) => false,
+                );
               },
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(Icons.logout, color: Colors.black54),
+              ),
             ),
           ],
       ),
@@ -265,7 +275,7 @@ class _CatalogPageState extends State<CatalogPage> {
 
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                 const SnackBar(
-                                                  content: Text('Berhasil ditambahkan ke keranjang 🛒'),
+                                                  content: Text('Berhasil ditambahkan ke keranjang '),
                                                 ),
                                               );
                                             },

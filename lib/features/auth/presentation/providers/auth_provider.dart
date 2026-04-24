@@ -1,9 +1,10 @@
+import 'package:flutter/foundation.dart'; 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shopping_app/core/service/secure_storage.dart';
 import 'package:shopping_app/core/service/dio_client.dart';
-import 'package:shopping_app/core/constants/api_constants.dart'; 
+import 'package:shopping_app/core/constants/api_constants.dart';
 
 // Representasi kondisi autentikasi
 enum AuthStatus {
@@ -185,7 +186,11 @@ class AuthProvider extends ChangeNotifier {
     // ─── Logout ───────────────────────────────────────────────
   Future<void> logout() async {
     await _auth.signOut();
-    await _googleSignIn.signOut();
+    
+    if (!kIsWeb) {
+      await _googleSignIn.signOut(); // ← skip di Web
+    }
+    
     await SecureStorageService.clearAll();
     _firebaseUser = null;
     _backendToken = null;
