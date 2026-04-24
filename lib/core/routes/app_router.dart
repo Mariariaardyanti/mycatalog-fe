@@ -4,6 +4,7 @@ import 'package:shopping_app/features/auth/presentation/pages/register_page.dart
 import 'package:shopping_app/features/auth/presentation/pages/verif_email_page.dart';
 import 'package:shopping_app/features/catalog/presentation/pages/catalog_page.dart';
 import 'package:shopping_app/features/cart/presentation/pages/cart_page.dart';
+import 'package:shopping_app/features/cart/presentation/pages/checkout_page.dart';
 
 
 class AppRouter {
@@ -13,6 +14,7 @@ class AppRouter {
   static const verifyEmail = '/verify-email';
   static const catalog = '/catalog';
   static const cart = '/cart';
+  static const checkout = '/checkout';
 
   //  Route generator
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -33,6 +35,9 @@ class AppRouter {
       
       case cart:
       return MaterialPageRoute(builder: (_) => const CartPage());
+
+      case checkout:
+  return MaterialPageRoute(builder: (_) => const CheckoutPage());
 
       default:
         return MaterialPageRoute(builder: (_) => const LoginPage());
