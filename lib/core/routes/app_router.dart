@@ -21,26 +21,25 @@ class AppRouter {
     switch (settings.name) {
 
       case login:
-        return MaterialPageRoute(builder: (_) => const LoginPage());
+      return MaterialPageRoute(builder: (_) => const LoginPage());
 
       case register:
-        return MaterialPageRoute(builder: (_) => const RegisterPage());
+      return MaterialPageRoute(builder: (_) => const RegisterPage());
 
       case verifyEmail:
-        return MaterialPageRoute(builder: (_) => const VerifyEmailPage());
+      return MaterialPageRoute(builder: (_) => const VerifyEmailPage());
 
       case catalog:
-        return MaterialPageRoute(builder: (_) => const CatalogPage());
-
+      return MaterialPageRoute(builder: (_) => const CatalogPage());
       
       case cart:
       return MaterialPageRoute(builder: (_) => const CartPage());
 
       case checkout:
-  return MaterialPageRoute(builder: (_) => const CheckoutPage());
+      return MaterialPageRoute(builder: (_) => const CheckoutPage());
 
       default:
-        return MaterialPageRoute(builder: (_) => const LoginPage());
+      return MaterialPageRoute(builder: (_) => const LoginPage());
 
     }
   }
