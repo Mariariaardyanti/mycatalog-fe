@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_app/core/constants/api_colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -29,7 +30,14 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            color: AppColors.textPrimary,
+          ),
+        ),
         const SizedBox(height: 6),
         TextFormField(
           controller: controller,
@@ -37,29 +45,35 @@ class CustomTextField extends StatelessWidget {
           validator: validator,
           keyboardType: keyboardType,
           enabled: enabled,
+          style: const TextStyle(
+            fontSize: 14,
+            color: AppColors.textPrimary,
+          ),
           decoration: InputDecoration(
             hintText: hint,
+            hintStyle: const TextStyle(color: AppColors.textSecondary),
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             filled: true,
-            fillColor: Colors.grey.shade50,
+            fillColor: enabled ? AppColors.primaryFill : AppColors.primaryLight,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: AppColors.primaryLight),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: AppColors.primaryLight),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFF1565C0), width: 2),
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.red),
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: AppColors.error),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           ),
         ),
       ],
