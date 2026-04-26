@@ -78,9 +78,9 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               Column(
                   children: [
                     Image.network(
-                      'https://url-logo-anda.com/logo.png',
-                      height: 80,
-                      width: 80,
+                      'https://i.ibb.co.com/HLY7qRxC/Pink-Simple-Illustration-Fashion-Store-Logo-1-removebg-preview.png',
+                      height: 120,
+                      width: 120,
                       fit: BoxFit.contain,
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;

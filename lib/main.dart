@@ -4,8 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:shopping_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:shopping_app/features/catalog/presentation/providers/product_provider.dart';
-import 'package:shopping_app/core/routes/app_router.dart';
 import 'package:shopping_app/features/cart/presentation/providers/cart_provider.dart';
+import 'package:shopping_app/core/routes/app_router.dart';
+import 'package:shopping_app/features/auth/presentation/pages/splash_screen.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +19,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => ProductProvider()), //  penting
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
       ],
       child: const MyApp(),
@@ -34,8 +35,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      // pakai router
-      initialRoute: AppRouter.login,
+      home: const SplashScreen(),
+
       onGenerateRoute: AppRouter.onGenerateRoute,
     );
   }

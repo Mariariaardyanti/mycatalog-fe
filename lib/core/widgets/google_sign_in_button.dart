@@ -26,8 +26,13 @@ class GoogleSignInButton extends StatelessWidget {
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Logo Google — download dari: fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg
-                  Image.asset('assets/icons/google_logo.png', height: 22),
+                  Image.network(
+                    'https://i.ibb.co.com/Q7dHF97H/5a951939c4ffc33e8c148af2.png',
+                    height: 24,
+                    width: 24,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const Icon(Icons.g_mobiledata, size: 24),
+                  ),
                   const SizedBox(width: 12),
                   const Text(
                     'Lanjutkan dengan Google',
