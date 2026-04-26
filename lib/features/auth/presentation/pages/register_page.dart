@@ -71,10 +71,42 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 32),
 
                   // Widget reusable: AuthHeader
-                  const AuthHeader(
-                    icon: Icons.person_add_alt_1,
-                    title: 'Buat Akun Baru',
-                    subtitle: 'Lengkapi data diri Anda untuk mendaftar',
+                  Column(
+                    children: [
+                      Image.network(
+                        'https://i.ibb.co.com/HLY7qRxC/Pink-Simple-Illustration-Fashion-Store-Logo-1-removebg-preview.png',
+                        height: 120,
+                        width: 120,
+                        fit: BoxFit.contain,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return const SizedBox(
+                            height: 80,
+                            width: 80,
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) => const Icon(
+                          Icons.person_add_alt_1,
+                          size: 80,
+                          color: Color(0xFF1565C0),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Buat Akun Baru',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Lengkapi data diri Anda untuk mendaftar',
+                        style: TextStyle(color: Colors.grey),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 32),
 

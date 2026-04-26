@@ -119,9 +119,9 @@ class _LoginPageState extends State<LoginPage> {
                   Column(
                     children: [
                       Image.network(
-                        'https://i.ibb.co.com/v6hjM2Nd/Pink-Simple-Illustration-Fashion-Store-Logo-1.png',
-                        height: 80,
-                        width: 80,
+                        'https://i.ibb.co.com/HLY7qRxC/Pink-Simple-Illustration-Fashion-Store-Logo-1-removebg-preview.png',
+                        height: 120,
+                        width: 120,
                         fit: BoxFit.contain,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
