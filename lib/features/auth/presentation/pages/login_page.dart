@@ -116,10 +116,42 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 32),
-                  const AuthHeader(
-                    icon: Icons.lock_open_outlined,
-                    title: 'Selamat Datang',
-                    subtitle: 'Masuk ke akun Anda untuk melanjutkan',
+                  Column(
+                    children: [
+                      Image.network(
+                        'https://i.ibb.co.com/v6hjM2Nd/Pink-Simple-Illustration-Fashion-Store-Logo-1.png',
+                        height: 80,
+                        width: 80,
+                        fit: BoxFit.contain,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return const SizedBox(
+                            height: 80,
+                            width: 80,
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) => const Icon(
+                          Icons.lock_open_outlined,
+                          size: 80,
+                          color: Color(0xFF1565C0),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Selamat Datang',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Masuk ke akun Anda untuk melanjutkan',
+                        style: TextStyle(color: Colors.grey),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 32),
                   CustomTextField(
