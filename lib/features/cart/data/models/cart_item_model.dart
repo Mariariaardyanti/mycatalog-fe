@@ -3,6 +3,7 @@ class CartItemModel {
   final String name;
   final double price;
   final String imageUrl;
+  final String category; 
   int quantity;
 
   CartItemModel({
@@ -10,6 +11,7 @@ class CartItemModel {
     required this.name,
     required this.price,
     required this.imageUrl,
+    required this.category,
     this.quantity = 1,
   });
 
