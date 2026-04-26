@@ -75,12 +75,40 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Widget reusable: AuthHeader
-              const AuthHeader(
-                icon:      Icons.mark_email_unread_outlined,
-                title:     'Verifikasi Email Kamu',
-                subtitle:  'Kami sudah mengirim link verifikasi ke email di bawah ini.',
-                iconColor: Colors.orange,
-              ),
+              Column(
+                  children: [
+                    Image.network(
+                      'https://url-logo-anda.com/logo.png',
+                      height: 80,
+                      width: 80,
+                      fit: BoxFit.contain,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const SizedBox(
+                          height: 80,
+                          width: 80,
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) => const Icon(
+                        Icons.mark_email_unread_outlined,
+                        size: 80,
+                        color: Colors.orange,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Verifikasi Email Kamu',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Kami sudah mengirim link verifikasi ke email di bawah ini.',
+                      style: TextStyle(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               const SizedBox(height: 24),
 
               // Tampilkan email user
