@@ -6,7 +6,8 @@ import 'package:shopping_app/core/widgets/loading_overlay.dart';
 import 'package:shopping_app/core/widgets/custom_text_field.dart';
 import 'package:shopping_app/core/widgets/custom_button.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:shopping_app/core/routes/app_router.dart'; 
+import 'package:shopping_app/core/routes/app_router.dart';
+import 'package:shopping_app/core/constants/api_colors.dart'; 
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -41,7 +42,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (!mounted) return;
     if (success) {
-      // Navigasi ke halaman instruksi verifikasi email
       Navigator.pushReplacementNamed(context, AppRouter.verifyEmail);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -61,6 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
       isLoading: isLoading,
       message: 'Mendaftarkan akun...',
       child: Scaffold(
+        backgroundColor: AppColors.background, 
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
@@ -69,8 +70,6 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 32),
-
-                  // Widget reusable: AuthHeader
                   Column(
                     children: [
                       Image.network(
@@ -98,19 +97,18 @@ class _RegisterPageState extends State<RegisterPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary, 
                         ),
                       ),
                       const SizedBox(height: 8),
                       const Text(
                         'Lengkapi data diri Anda untuk mendaftar',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: AppColors.textSecondary),
                         textAlign: TextAlign.center,
                       ),
                     ],
                   ),
                   const SizedBox(height: 32),
-
-                  // Widget reusable: CustomTextField
                   CustomTextField(
                     label: 'Nama Lengkap',
                     hint: 'Masukkan nama lengkap',
@@ -119,7 +117,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     validator: (v) => (v?.isEmpty ?? true) ? 'Nama wajib diisi' : null,
                   ),
                   const SizedBox(height: 16),
-
                   CustomTextField(
                     label: 'Email',
                     hint: 'contoh@email.com',
@@ -133,7 +130,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
                   const SizedBox(height: 16),
-
                   CustomTextField(
                     label: 'Password',
                     hint: 'Minimal 8 karakter',
@@ -148,7 +144,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         ? 'Password minimal 8 karakter' : null,
                   ),
                   const SizedBox(height: 16),
-
                   CustomTextField(
                     label: 'Konfirmasi Password',
                     hint: 'Ulangi password',
@@ -159,22 +154,26 @@ class _RegisterPageState extends State<RegisterPage> {
                         ? 'Password tidak cocok' : null,
                   ),
                   const SizedBox(height: 28),
-
-                  // Widget reusable: CustomButton
                   CustomButton(
                     label: 'Daftar Sekarang',
                     onPressed: _register,
                     isLoading: isLoading,
                   ),
                   const SizedBox(height: 16),
-
-                  // Link ke Login
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const Text('Sudah punya akun? '),
+                    const Text(
+                      'Sudah punya akun? ',
+                      style: TextStyle(color: AppColors.textPrimary), 
+                    ),
                     GestureDetector(
                       onTap: () => Navigator.pushReplacementNamed(context, AppRouter.login),
-                      child: const Text('Masuk',
-                        style: TextStyle(color: Color(0xFF1565C0), fontWeight: FontWeight.bold)),
+                      child: const Text(
+                        'Masuk',
+                        style: TextStyle(
+                          color: AppColors.primaryDark, 
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ]),
                 ],

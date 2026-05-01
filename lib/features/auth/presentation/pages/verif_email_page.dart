@@ -6,7 +6,8 @@ import 'package:shopping_app/core/widgets/auth_header.dart';
 import 'package:shopping_app/core/widgets/loading_overlay.dart';
 import 'package:shopping_app/core/widgets/custom_button.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:shopping_app/core/routes/app_router.dart'; 
+import 'package:shopping_app/core/routes/app_router.dart';
+import 'package:shopping_app/core/constants/api_colors.dart'; 
 
 class VerifyEmailPage extends StatefulWidget {
   const VerifyEmailPage({super.key});
@@ -31,7 +32,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     super.dispose();
   }
 
-  // Polling: cek setiap 5 detik apakah email sudah diverifikasi
   void _startPolling() {
     _timer = Timer.periodic(const Duration(seconds: 5), (_) async {
       if (!mounted) return;
@@ -48,7 +48,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     if (_resendCooldown) return;
     await context.read<AuthProvider>().resendVerificationEmail();
 
-    // Cooldown 60 detik sebelum bisa kirim lagi
     setState(() { _resendCooldown = true; _countdown = 60; });
     Timer.periodic(const Duration(seconds: 1), (t) {
       setState(() { _countdown--; });
@@ -68,77 +67,85 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     final user = context.watch<AuthProvider>().firebaseUser;
 
     return Scaffold(
+      backgroundColor: AppColors.background, 
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Widget reusable: AuthHeader
               Column(
-                  children: [
-                    Image.network(
-                      'https://i.ibb.co.com/HLY7qRxC/Pink-Simple-Illustration-Fashion-Store-Logo-1-removebg-preview.png',
-                      height: 120,
-                      width: 120,
-                      fit: BoxFit.contain,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return const SizedBox(
-                          height: 80,
-                          width: 80,
-                          child: Center(child: CircularProgressIndicator()),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.mark_email_unread_outlined,
-                        size: 80,
-                        color: Colors.orange,
-                      ),
+                children: [
+                  Image.network(
+                    'https://i.ibb.co.com/HLY7qRxC/Pink-Simple-Illustration-Fashion-Store-Logo-1-removebg-preview.png',
+                    height: 120,
+                    width: 120,
+                    fit: BoxFit.contain,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const SizedBox(
+                        height: 80,
+                        width: 80,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.mark_email_unread_outlined,
+                      size: 80,
+                      color: Colors.orange,
                     ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Verifikasi Email Kamu',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Verifikasi Email Kamu',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary, 
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Kami sudah mengirim link verifikasi ke email di bawah ini.',
-                      style: TextStyle(color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Kami sudah mengirim link verifikasi ke email di bawah ini.',
+                    style: TextStyle(color: AppColors.textSecondary), 
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
               const SizedBox(height: 24),
 
-              // Tampilkan email user
+              // Email user
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: AppColors.primaryFill, 
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300),
+                  border: Border.all(color: AppColors.primaryLight), 
                 ),
                 child: Text(
                   user?.email ?? '-',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary, 
+                  ),
                 ),
               ),
               const SizedBox(height: 32),
 
-              // Indikator polling
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                const SizedBox(
-                  width: 16, height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: AppColors.primary, 
                 ),
                 const SizedBox(width: 12),
-                Text('Menunggu konfirmasi...',
-                  style: TextStyle(color: Colors.grey.shade600)),
+                const Text(
+                  'Menunggu konfirmasi...',
+                  style: TextStyle(color: AppColors.textSecondary), 
+                ),
               ]),
               const SizedBox(height: 32),
 
-              // Tombol kirim ulang dengan cooldown
               CustomButton(
                 label: _resendCooldown
                     ? 'Kirim Ulang ($_countdown detik)'
@@ -148,7 +155,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               ),
               const SizedBox(height: 16),
 
-              // Tombol logout
               CustomButton(
                 label: 'Ganti Akun / Logout',
                 variant: ButtonVariant.text,

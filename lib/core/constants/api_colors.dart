@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 abstract class AppColors {
-  static const Color primary      = Color(0xFFC9A84C); // Gold utama
-  static const Color primaryDark  = Color(0xFF9A7832); // Gold gelap — pressed / shadow
-  static const Color primaryLight = Color(0xFFF5E9C8); // Gold muda  — border / divider
-  static const Color primaryFill  = Color(0xFFFDF6E3); // Gold pucat — fill input / chip
+  static const Color primary      = Color(0xFFC9A84C); 
+  static const Color primaryDark  = Color(0xFF9A7832); 
+  static const Color primaryLight = Color(0xFFF5E9C8); 
+  static const Color primaryFill  = Color(0xFFFDF6E3); 
 
-  static const Color background   = Color(0xFFFAF7F2); // Scaffold (krem hangat)
-  static const Color surface      = Color(0xFFFFFFFF); // Card / AppBar / BottomSheet
-  static const Color surfaceAlt   = Color(0xFFF7F3EC); // Surface alternatif
+  static const Color background   = Color(0xFFFAF7F2); 
+  static const Color surface      = Color(0xFFFFFFFF); 
+  static const Color surfaceAlt   = Color(0xFFF7F3EC); 
 
-  static const Color textPrimary  = Color(0xFF2C1F0E); // Heading & body utama
-  static const Color textSecondary= Color(0xFF8C7A5E); // Caption / label / placeholder
-  static const Color textOnGold   = Color(0xFFFFFFFF); // Teks di atas warna gold
+  static const Color textPrimary  = Color(0xFF2C1F0E); 
+  static const Color textSecondary= Color(0xFF8C7A5E); 
+  static const Color textOnGold   = Color(0xFFFFFFFF); 
 
   static const Color error        = Color(0xFFD32F2F);
   static const Color errorLight   = Color(0xFFFFEBEE);

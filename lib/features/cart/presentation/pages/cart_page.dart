@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
+import 'package:shopping_app/features/cart/data/models/cart_item_model.dart';
 import 'package:shopping_app/core/widgets/custom_button.dart';
+
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -47,12 +49,24 @@ class CartPage extends StatelessWidget {
           ? _buildEmptyState(context, theme, colorScheme)
           : Column(
               children: [
-                // Item count badge
+                // ── Item count + Select All row ──
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Row(
                     children: [
+                      // Checkbox "Pilih Semua"
+                      _SelectAllCheckbox(cart: cart, colorScheme: colorScheme),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Pilih Semua',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurface.withOpacity(0.7),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Spacer(),
+                      // Badge jumlah item
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
@@ -73,11 +87,11 @@ class CartPage extends StatelessWidget {
                   ),
                 ),
 
-                // Cart item list
+                // ── Cart item list ──
                 Expanded(
                   child: ListView.separated(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
+                        horizontal: 16, vertical: 4),
                     itemCount: cart.items.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 12),
                     itemBuilder: (_, i) {
@@ -92,12 +106,13 @@ class CartPage extends StatelessWidget {
                   ),
                 ),
 
-                // Bottom summary panel
+                // ── Bottom summary panel ──
                 _buildSummaryPanel(context, cart, colorScheme, theme),
               ],
             ),
     );
   }
+
 
   void _showClearDialog(BuildContext context, CartProvider cart) {
     showDialog(
@@ -127,6 +142,7 @@ class CartPage extends StatelessWidget {
       ),
     );
   }
+
 
   Widget _buildEmptyState(
       BuildContext context, ThemeData theme, ColorScheme colorScheme) {
@@ -177,8 +193,11 @@ class CartPage extends StatelessWidget {
     );
   }
 
+
   Widget _buildSummaryPanel(BuildContext context, CartProvider cart,
       ColorScheme colorScheme, ThemeData theme) {
+    final hasSelection = cart.selectedIds.isNotEmpty;
+
     return Container(
       padding: EdgeInsets.fromLTRB(
           20, 16, 20, MediaQuery.of(context).padding.bottom + 16),
@@ -196,7 +215,6 @@ class CartPage extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Drag handle
           Center(
             child: Container(
               width: 36,
@@ -210,8 +228,9 @@ class CartPage extends StatelessWidget {
           ),
 
           _summaryRow(
-            label: 'Subtotal (${cart.items.length} item)',
-            value: 'Rp ${cart.totalPrice.toStringAsFixed(0)}',
+            label:
+                'Subtotal (${cart.selectedItems.length} item dipilih)',
+            value: 'Rp ${cart.selectedTotalPrice.toStringAsFixed(0)}',
             colorScheme: colorScheme,
             theme: theme,
           ),
@@ -230,7 +249,7 @@ class CartPage extends StatelessWidget {
           ),
           _summaryRow(
             label: 'Total Pembayaran',
-            value: 'Rp ${cart.totalPrice.toStringAsFixed(0)}',
+            value: 'Rp ${cart.selectedTotalPrice.toStringAsFixed(0)}',
             colorScheme: colorScheme,
             theme: theme,
             isBold: true,
@@ -238,9 +257,13 @@ class CartPage extends StatelessWidget {
           const SizedBox(height: 16),
 
           CustomButton(
-            label: 'Checkout Sekarang',
+            label: hasSelection
+                ? 'Checkout (${cart.selectedItems.length} item)'
+                : 'Pilih item untuk checkout',
             icon: const Icon(Icons.shopping_bag_outlined, size: 18),
-            onPressed: () => Navigator.pushNamed(context, '/checkout'),
+            onPressed: hasSelection
+                ? () => Navigator.pushNamed(context, '/checkout')
+                : null,
           ),
         ],
       ),
@@ -261,7 +284,8 @@ class CartPage extends StatelessWidget {
         Text(
           label,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurface.withOpacity(isBold ? 0.9 : 0.55),
+            color:
+                colorScheme.onSurface.withOpacity(isBold ? 0.9 : 0.55),
             fontWeight: isBold ? FontWeight.w700 : FontWeight.w400,
             fontSize: isBold ? 15 : 13,
           ),
@@ -280,6 +304,46 @@ class CartPage extends StatelessWidget {
   }
 }
 
+
+class _SelectAllCheckbox extends StatelessWidget {
+  const _SelectAllCheckbox({
+    required this.cart,
+    required this.colorScheme,
+  });
+
+  final CartProvider cart;
+  final ColorScheme colorScheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => cart.toggleSelectAll(),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+          color: cart.isAllSelected
+              ? colorScheme.primary
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(
+            color: cart.isAllSelected
+                ? colorScheme.primary
+                : colorScheme.onSurface.withOpacity(0.3),
+            width: 2,
+          ),
+        ),
+        child: cart.isAllSelected
+            ? const Icon(Icons.check_rounded,
+                size: 16, color: Colors.white)
+            : null,
+      ),
+    );
+  }
+}
+
+
 class _CartItemCard extends StatelessWidget {
   const _CartItemCard({
     required this.item,
@@ -288,136 +352,174 @@ class _CartItemCard extends StatelessWidget {
     required this.theme,
   });
 
-  final dynamic item;
+  final CartItemModel item;
   final CartProvider cart;
   final ColorScheme colorScheme;
   final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colorScheme.onSurface.withOpacity(0.07)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+    final isSelected = cart.isSelected(item.id);
+
+    return GestureDetector(
+      onTap: () => cart.toggleSelection(item.id),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? colorScheme.primary.withOpacity(0.06)
+              : colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected
+                ? colorScheme.primary.withOpacity(0.5)
+                : colorScheme.onSurface.withOpacity(0.07),
+            width: isSelected ? 1.5 : 1,
           ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Product image
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              width: 88,
-              height: 88,
-              color: colorScheme.primary.withOpacity(0.06),
-              child: Image.network(
-                item.imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Icon(
-                  Icons.shopping_bag_outlined,
-                  size: 36,
-                  color: colorScheme.primary.withOpacity(0.4),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 2, right: 10),
+              child: GestureDetector(
+                onTap: () => cart.toggleSelection(item.id),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  width: 22,
+                  height: 22,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? colorScheme.primary
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: isSelected
+                          ? colorScheme.primary
+                          : colorScheme.onSurface.withOpacity(0.25),
+                      width: 2,
+                    ),
+                  ),
+                  child: isSelected
+                      ? const Icon(Icons.check_rounded,
+                          size: 14, color: Colors.white)
+                      : null,
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
 
-          // Details
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Category label (opsional — tampil hanya jika ada)
-                if (item.category != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primary.withOpacity(0.10),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      item.category,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: 6),
-                Text(
-                  item.name,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: colorScheme.onSurface,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Rp ${item.price.toStringAsFixed(0)}',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                    color: colorScheme.primary,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                width: 84,
+                height: 84,
+                color: colorScheme.primary.withOpacity(0.06),
+                child: Image.network(
+                  item.imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Icon(
+                    Icons.shopping_bag_outlined,
+                    size: 36,
+                    color: colorScheme.primary.withOpacity(0.4),
                   ),
                 ),
-                const SizedBox(height: 10),
-
-                // Stepper + delete
-                Row(
-                  children: [
-                    _QuantityStepper(
-                      quantity: item.quantity,
-                      colorScheme: colorScheme,
-                      onDecrease: () {
-                        if (item.quantity > 1) {
-                          cart.decreaseQuantity(item.id);
-                        } else {
-                          cart.removeFromCart(item.id);
-                        }
-                      },
-                      onIncrease: () => cart.increaseQuantity(item.id),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () => cart.removeFromCart(item.id),
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: colorScheme.error.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          Icons.delete_outline_rounded,
-                          size: 18,
-                          color: colorScheme.error,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(width: 12),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (item.category != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary.withOpacity(0.10),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        item.category!,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 6),
+                  Text(
+                    item.name,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: colorScheme.onSurface,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Rp ${item.price.toStringAsFixed(0)}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  Row(
+                    children: [
+                      _QuantityStepper(
+                        quantity: item.quantity,
+                        colorScheme: colorScheme,
+                        onDecrease: () {
+                          if (item.quantity > 1) {
+                            cart.decreaseQuantity(item.id);
+                          } else {
+                            cart.removeFromCart(item.id);
+                          }
+                        },
+                        onIncrease: () => cart.increaseQuantity(item.id),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () => cart.removeFromCart(item.id),
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: colorScheme.error.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.delete_outline_rounded,
+                            size: 18,
+                            color: colorScheme.error,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
 
 class _QuantityStepper extends StatelessWidget {
   const _QuantityStepper({
@@ -434,31 +536,38 @@ class _QuantityStepper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 32,
-      decoration: BoxDecoration(
-        color: colorScheme.primary.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _StepButton(
-              icon: Icons.remove, onTap: onDecrease, colorScheme: colorScheme),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text(
-              '$quantity',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 13,
-                color: colorScheme.onSurface,
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        height: 32,
+        decoration: BoxDecoration(
+          color: colorScheme.primary.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _StepButton(
+                icon: Icons.remove,
+                onTap: onDecrease,
+                colorScheme: colorScheme),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                '$quantity',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                  color: colorScheme.onSurface,
+                ),
               ),
             ),
-          ),
-          _StepButton(
-              icon: Icons.add, onTap: onIncrease, colorScheme: colorScheme),
-        ],
+            _StepButton(
+                icon: Icons.add,
+                onTap: onIncrease,
+                colorScheme: colorScheme),
+          ],
+        ),
       ),
     );
   }

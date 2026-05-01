@@ -9,7 +9,8 @@ import 'package:shopping_app/core/widgets/custom_button.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:shopping_app/core/widgets/divider_with_text.dart';
 import 'package:shopping_app/core/widgets/google_sign_in_button.dart';
-import 'package:shopping_app/core/routes/app_router.dart'; 
+import 'package:shopping_app/core/routes/app_router.dart';
+import 'package:shopping_app/core/constants/api_colors.dart'; 
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -31,7 +32,6 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  /// Handler untuk login email/password
   Future<void> _loginEmail() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -45,7 +45,6 @@ class _LoginPageState extends State<LoginPage> {
     _handleLoginResult(ok, auth);
   }
 
-  /// Handler untuk login Google
   Future<void> _loginGoogle() async {
     final auth = context.read<AuthProvider>();
     final ok = await auth.loginWithGoogle();
@@ -53,7 +52,6 @@ class _LoginPageState extends State<LoginPage> {
     _handleLoginResult(ok, auth);
   }
 
-  /// Routing berdasarkan hasil login
   void _handleLoginResult(bool ok, AuthProvider auth) {
     if (ok) {
       Navigator.pushReplacementNamed(context, AppRouter.catalog);
@@ -108,6 +106,7 @@ class _LoginPageState extends State<LoginPage> {
       isLoading: isLoading,
       message: 'Masuk ke akun...',
       child: Scaffold(
+        backgroundColor: AppColors.background, 
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
@@ -131,7 +130,8 @@ class _LoginPageState extends State<LoginPage> {
                             child: Center(child: CircularProgressIndicator()),
                           );
                         },
-                        errorBuilder: (context, error, stackTrace) => const Icon(
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(
                           Icons.lock_open_outlined,
                           size: 80,
                           color: Color(0xFF1565C0),
@@ -143,12 +143,13 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary, 
                         ),
                       ),
                       const SizedBox(height: 8),
                       const Text(
                         'Masuk ke akun Anda untuk melanjutkan',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: AppColors.textSecondary),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -190,7 +191,10 @@ class _LoginPageState extends State<LoginPage> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () => _showForgotPasswordDialog(context),
-                      child: const Text('Lupa Password?'),
+                      child: const Text(
+                        'Lupa Password?',
+                        style: TextStyle(color: AppColors.primary), 
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -210,7 +214,10 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Belum punya akun? '),
+                      const Text(
+                        'Belum punya akun? ',
+                        style: TextStyle(color: AppColors.textPrimary),
+                      ),
                       GestureDetector(
                         onTap: () => Navigator.pushReplacementNamed(
                           context,
@@ -219,7 +226,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: const Text(
                           'Daftar',
                           style: TextStyle(
-                            color: Color(0xFF1565C0),
+                            color: AppColors.primaryDark, 
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -235,5 +242,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
-
