@@ -17,7 +17,6 @@ class CartProvider extends ChangeNotifier {
 
   bool isSelected(int id) => _selectedIds.contains(id);
 
-  // ─── Cart Operations (tidak berubah) ────────────────────────
 
   void addToCart(ProductModel product) {
     final index = _items.indexWhere((e) => e.id == product.id);
@@ -70,23 +69,17 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ─── Price & Quantity Getters ────────────────────────────────
 
-  /// Total harga semua item (tidak berubah)
   double get totalPrice =>
       _items.fold(0, (sum, item) => sum + item.total);
 
-  /// Total harga hanya item yang dipilih (BARU)
   double get selectedTotalPrice =>
       selectedItems.fold(0, (sum, item) => sum + item.total);
 
-  /// Total qty semua item (tidak berubah)
   int get totalQuantity =>
       _items.fold(0, (sum, item) => sum + item.quantity);
 
-  // ─── Selection Operations (BARU) ────────────────────────────
 
-  /// Toggle centang satu item
   void toggleSelection(int id) {
     if (_selectedIds.contains(id)) {
       _selectedIds.remove(id);
@@ -96,7 +89,6 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Pilih semua / batalkan semua
   void toggleSelectAll() {
     if (isAllSelected) {
       _selectedIds.clear();
@@ -106,13 +98,11 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Batalkan semua seleksi
   void clearSelection() {
     _selectedIds.clear();
     notifyListeners();
   }
 
-  /// Hapus hanya item yang sedang dipilih
   void removeSelectedItems() {
     _items.removeWhere((e) => _selectedIds.contains(e.id));
     _selectedIds.clear();

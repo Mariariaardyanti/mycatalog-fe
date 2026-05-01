@@ -18,7 +18,6 @@ enum AuthStatus {
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // ✅ FIX 1: Tambahkan scopes email
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
   AuthStatus _status = AuthStatus.initial;
@@ -66,7 +65,6 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> loginAfterEmailVerification() async {
     _setLoading();
     try {
-      // ✅ FIX 2: Null check sebelum akses _tempEmail & _tempPassword
       if (_tempEmail == null || _tempPassword == null) {
         _setError('Sesi habis. Silakan daftar ulang.');
         return false;
@@ -102,7 +100,6 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> _verifyTokenToBackend() async {
     try {
-      // ✅ FIX 3: Force refresh token agar selalu valid
       final firebaseToken = await _firebaseUser?.getIdToken(true);
       debugPrint('=== Sending token to backend ===');
 
@@ -168,7 +165,6 @@ class AuthProvider extends ChangeNotifier {
     try {
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        // User membatalkan login, kembalikan ke unauthenticated (bukan error)
         _status = AuthStatus.unauthenticated;
         notifyListeners();
         return false;
@@ -183,12 +179,10 @@ class AuthProvider extends ChangeNotifier {
       _firebaseUser = userCred.user;
       return await _verifyTokenToBackend();
     } on FirebaseAuthException catch (e) {
-      // ✅ FIX 4: Handle FirebaseAuthException secara spesifik
       debugPrint('=== FirebaseAuthException Google: ${e.code} ===');
       _setError(_mapFirebaseError(e.code));
       return false;
     } catch (e) {
-      // ✅ FIX 4: Tidak expose detail error teknis ke user
       debugPrint('Error loginWithGoogle: $e');
       _setError('Gagal login dengan Google. Coba lagi.');
       return false;
@@ -251,9 +245,9 @@ class AuthProvider extends ChangeNotifier {
     'invalid-email' => 'Format email tidak valid.',
     'weak-password' => 'Password terlalu lemah. Minimal 6 karakter.',
     'network-request-failed' => 'Tidak ada koneksi internet.',
-    'invalid-credential' => 'Email atau password salah.',   // ✅ tambahan
-    'too-many-requests' => 'Terlalu banyak percobaan. Coba lagi nanti.', // ✅ tambahan
-    'user-disabled' => 'Akun ini telah dinonaktifkan.',    // ✅ tambahan
+    'invalid-credential' => 'Email atau password salah.',   
+    'too-many-requests' => 'Terlalu banyak percobaan. Coba lagi nanti.', 
+    'user-disabled' => 'Akun ini telah dinonaktifkan.',   
     _ => 'Terjadi kesalahan. Coba lagi.',
   };
 }

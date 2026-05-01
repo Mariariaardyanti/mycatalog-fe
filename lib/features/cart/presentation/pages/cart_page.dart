@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import 'package:shopping_app/features/cart/data/models/cart_item_model.dart';
+import 'package:shopping_app/core/routes/app_router.dart';
 import 'package:shopping_app/core/widgets/custom_button.dart';
+import 'package:shopping_app/core/constants/api_colors.dart';
 
 
 class CartPage extends StatelessWidget {
@@ -45,17 +47,50 @@ class CartPage extends StatelessWidget {
           const SizedBox(width: 8),
         ],
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: AppColors.surface,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.textSecondary,
+        selectedLabelStyle:
+            const TextStyle(fontSize: 10, fontWeight: FontWeight.w700),
+        unselectedLabelStyle: const TextStyle(fontSize: 10),
+        elevation: 12,
+        currentIndex: 1, 
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushNamed(context, AppRouter.catalog);
+              break;
+            case 1:
+              break;
+            case 2:
+              break;
+            case 3:
+              Navigator.pushNamed(context, AppRouter.profile);
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home_rounded), label: 'Home'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_bag_outlined), label: 'Cart'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.favorite_border_rounded), label: 'Favorite'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline_rounded), label: 'Account'),
+        ],
+      ),
       body: cart.items.isEmpty
           ? _buildEmptyState(context, theme, colorScheme)
           : Column(
               children: [
-                // ── Item count + Select All row ──
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Row(
                     children: [
-                      // Checkbox "Pilih Semua"
                       _SelectAllCheckbox(cart: cart, colorScheme: colorScheme),
                       const SizedBox(width: 8),
                       Text(
@@ -66,7 +101,6 @@ class CartPage extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      // Badge jumlah item
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
@@ -87,7 +121,6 @@ class CartPage extends StatelessWidget {
                   ),
                 ),
 
-                // ── Cart item list ──
                 Expanded(
                   child: ListView.separated(
                     padding: const EdgeInsets.symmetric(
@@ -106,13 +139,11 @@ class CartPage extends StatelessWidget {
                   ),
                 ),
 
-                // ── Bottom summary panel ──
                 _buildSummaryPanel(context, cart, colorScheme, theme),
               ],
             ),
     );
   }
-
 
   void _showClearDialog(BuildContext context, CartProvider cart) {
     showDialog(
@@ -142,7 +173,6 @@ class CartPage extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildEmptyState(
       BuildContext context, ThemeData theme, ColorScheme colorScheme) {
@@ -193,7 +223,6 @@ class CartPage extends StatelessWidget {
     );
   }
 
-
   Widget _buildSummaryPanel(BuildContext context, CartProvider cart,
       ColorScheme colorScheme, ThemeData theme) {
     final hasSelection = cart.selectedIds.isNotEmpty;
@@ -226,10 +255,8 @@ class CartPage extends StatelessWidget {
               ),
             ),
           ),
-
           _summaryRow(
-            label:
-                'Subtotal (${cart.selectedItems.length} item dipilih)',
+            label: 'Subtotal (${cart.selectedItems.length} item dipilih)',
             value: 'Rp ${cart.selectedTotalPrice.toStringAsFixed(0)}',
             colorScheme: colorScheme,
             theme: theme,
@@ -255,7 +282,6 @@ class CartPage extends StatelessWidget {
             isBold: true,
           ),
           const SizedBox(height: 16),
-
           CustomButton(
             label: hasSelection
                 ? 'Checkout (${cart.selectedItems.length} item)'
@@ -284,8 +310,7 @@ class CartPage extends StatelessWidget {
         Text(
           label,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color:
-                colorScheme.onSurface.withOpacity(isBold ? 0.9 : 0.55),
+            color: colorScheme.onSurface.withOpacity(isBold ? 0.9 : 0.55),
             fontWeight: isBold ? FontWeight.w700 : FontWeight.w400,
             fontSize: isBold ? 15 : 13,
           ),
@@ -335,8 +360,7 @@ class _SelectAllCheckbox extends StatelessWidget {
           ),
         ),
         child: cart.isAllSelected
-            ? const Icon(Icons.check_rounded,
-                size: 16, color: Colors.white)
+            ? const Icon(Icons.check_rounded, size: 16, color: Colors.white)
             : null,
       ),
     );

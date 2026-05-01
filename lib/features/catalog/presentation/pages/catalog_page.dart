@@ -29,7 +29,6 @@ class _CatalogPageState extends State<CatalogPage>
     {'label': 'Tas Olahraga', 'icon': Icons.sports_basketball_outlined},
   ];
 
-  // ── Lifecycle ─────────────────────────────────────────────────
 
   @override
   void initState() {
@@ -154,11 +153,6 @@ class _CatalogPageState extends State<CatalogPage>
         ],
       ),
       actions: [
-        IconButton(
-          icon: const Icon(Icons.shopping_bag_outlined,
-              color: AppColors.textPrimary, size: 22),
-          onPressed: () => Navigator.pushNamed(context, '/cart'),
-        ),
         GestureDetector(
           onTap: () async {
             final auth = context.read<AuthProvider>();
@@ -570,7 +564,6 @@ class _CatalogPageState extends State<CatalogPage>
                   ),
                 ),
                 const SizedBox(height: 10),
-                // Add to cart
                 SizedBox(
                   width: double.infinity,
                   height: 34,
@@ -612,7 +605,6 @@ class _CatalogPageState extends State<CatalogPage>
           _buildSearchBar(),
           Expanded(
             child: switch (product.status) {
-              // Loading
               ProductStatus.loading || ProductStatus.initial => const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -627,7 +619,6 @@ class _CatalogPageState extends State<CatalogPage>
                   ),
                 ),
 
-              // Error
               ProductStatus.error => Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -661,7 +652,6 @@ class _CatalogPageState extends State<CatalogPage>
                   ),
                 ),
 
-              // Loaded
               ProductStatus.loaded => Builder(builder: (context) {
                   final filtered = _filteredProducts(product.products);
                   return RefreshIndicator(
@@ -669,10 +659,8 @@ class _CatalogPageState extends State<CatalogPage>
                     onRefresh: () => product.fetchProducts(),
                     child: CustomScrollView(
                       slivers: [
-                        // Banner
                         SliverToBoxAdapter(child: _buildPromoBanner()),
 
-                        // Kategori
                         SliverToBoxAdapter(
                           child: Padding(
                             padding: const EdgeInsets.only(top: 16),
@@ -699,13 +687,11 @@ class _CatalogPageState extends State<CatalogPage>
                           ),
                         ),
 
-                        // Section header
                         SliverToBoxAdapter(
                           child: _buildSectionHeader(
                               'Untuk Kamu', filtered.length),
                         ),
 
-                        // Empty state
                         if (filtered.isEmpty)
                           const SliverFillRemaining(
                             child: Center(
@@ -751,7 +737,6 @@ class _CatalogPageState extends State<CatalogPage>
         ],
       ),
 
-      // Bottom Nav
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: AppColors.surface,
@@ -761,6 +746,21 @@ class _CatalogPageState extends State<CatalogPage>
             const TextStyle(fontSize: 10, fontWeight: FontWeight.w700),
         unselectedLabelStyle: const TextStyle(fontSize: 10),
         elevation: 12,
+        currentIndex: 0, 
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              break;
+            case 1:
+              Navigator.pushNamed(context, '/cart');
+              break;
+            case 2:
+              break;
+            case 3:
+              Navigator.pushNamed(context, '/profile');
+              break;
+          }
+        },
         items: const [
           BottomNavigationBarItem(
               icon: Icon(Icons.home_rounded), label: 'Home'),
